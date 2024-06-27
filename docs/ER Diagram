@@ -1,0 +1,73 @@
+ER Diagram
+----------
+
++-------------------+
+|       Users       |
++-------------------+
+| id (PK)           |
+| name              |
+| email             |
+| password          |
+| address           |
+| phone_number      |
+| role              |
++-------------------+
+           |
+           |
+           | 1
+           | 
+           |
+           v
++-------------------+
+|      Orders       |
++-------------------+
+| id (PK)           |
+| user_id (FK)      |
+| order_date        |
+| status            |
+| total_amount      |
++-------------------+
+           |
+           | 1
+           |
+           |
+           v
++---------------------+
+|   OrderProducts     |
++---------------------+
+| id (PK)             |
+| order_id (FK)       |
+| product_id (FK)     |
+| quantity            |
+| price               |
++---------------------+
+           ^
+           | n
+           |
+           |
+           | n
+           |
+           v
++-------------------+
+|     Products      |
++-------------------+
+| id (PK)           |
+| name              |
+| description       |
+| price             |
+| stock             |
+| category_id (FK)  |
++-------------------+
+           ^
+           |
+           | 1
+           |
+           |
+           v
++-------------------+
+|    Categories     |
++-------------------+
+| id (PK)           |
+| name              |
+| description       |
++-------------------+
