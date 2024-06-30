@@ -1,9 +1,8 @@
 package com.medicine.userService.repository;
 
+import com.medicine.userService.model.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.medicine.userService.model.User;
-
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<Users, Long> {
     boolean existsByEmail(String email);
 }

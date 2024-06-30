@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.medicine.userService.model.User;
+import com.medicine.userService.model.Users;
 import com.medicine.userService.service.UserService;
 
 @RestController
@@ -22,17 +22,17 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody User user) {
-        return userService.registerUser(user);
+    public String registerUser(@RequestBody Users users) {
+        return userService.registerUser(users);
     }
 
     @GetMapping
-    public List<User> listAllUsers() {
+    public List<Users> listAllUsers() {
         return userService.listAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Long id) {
+    public Optional<Users> getUserById(@PathVariable Long id) {
         return userService.get(id);
     }
 }

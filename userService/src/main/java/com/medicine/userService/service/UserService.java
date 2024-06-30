@@ -3,10 +3,10 @@ package com.medicine.userService.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.medicine.userService.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.medicine.userService.model.User;
 import com.medicine.userService.repository.UserRepository;
 
 @Service
@@ -15,19 +15,19 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public String registerUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
+    public String registerUser(Users users) {
+        if (userRepository.existsByEmail(users.getEmail())) {
             return "Error: Email already in use!";
         }
-        userRepository.save(user);
+        userRepository.save(users);
         return "User registered successfully!";
     }
 
-    public List<User> listAll() {
+    public List<Users> listAll() {
         return userRepository.findAll();
     }
 
-    public Optional<User> get(Long id) {
+    public Optional<Users> get(Long id) {
         return userRepository.findById(id);
     }
 
