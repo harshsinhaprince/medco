@@ -21,18 +21,4 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public String registerUser(@RequestBody Users users) {
-        return userService.registerUser(users);
-    }
-
-    @GetMapping
-    public List<Users> listAllUsers() {
-        return userService.listAll();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<Users> getUserById(@PathVariable Long id) {
-        return userService.get(id);
-    }
 }

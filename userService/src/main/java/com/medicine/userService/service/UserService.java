@@ -5,30 +5,23 @@ import java.util.Optional;
 
 import com.medicine.userService.model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.medicine.userService.repository.UserRepository;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
 
     @Autowired
     private UserRepository userRepository;
-
-    public String registerUser(Users users) {
-        if (userRepository.existsByEmail(users.getEmail())) {
-            return "Error: Email already in use!";
-        }
-        userRepository.save(users);
-        return "User registered successfully!";
-    }
-
-    public List<Users> listAll() {
-        return userRepository.findAll();
-    }
-
-    public Optional<Users> get(Long id) {
-        return userRepository.findById(id);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // TODO Auto-generated method stub
+        return userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        
     }
 
 }

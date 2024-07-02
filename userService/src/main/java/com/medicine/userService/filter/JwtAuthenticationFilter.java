@@ -1,4 +1,4 @@
-package com.medicine.userService.security;
+package com.medicine.userService.filter;
 
 import java.io.IOException;
 
@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.medicine.userService.service.JwtService;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
@@ -22,9 +24,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
+    
     @Autowired
-    private JwtHelper jwtHelper;
+    private final JwtService jwtService = new JwtService();
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -33,13 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // try {
-        // Thread.sleep(500);
-        // } catch (InterruptedException e) {
-        // throw new RuntimeException(e);
-        // }
-        // Authorization
-
+        Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
         String requestHeader = request.getHeader("Authorization");
         // Bearer 2352345235sdfrsfgsdfsdf
         logger.info(" Header :  {}", requestHeader);
@@ -50,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             token = requestHeader.substring(7);
             try {
 
-                username = this.jwtHelper.getUsernameFromToken(token);
+                username = this.jwtService.extractUsername(token);
 
             } catch (IllegalArgumentException e) {
                 logger.info("Illegal Argument while fetching the username !!");
@@ -75,7 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // fetch user detail from username
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
+            Boolean validateToken = this.jwtService.isValid(token, userDetails);
             if (validateToken) {
 
                 // set the authentication
@@ -94,3 +90,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 }
+
