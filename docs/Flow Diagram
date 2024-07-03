@@ -1,0 +1,26 @@
+Flow Diagram
+-------------
+
++------------------+                   +------------------+                    +------------------+
+ |   User Service   |                   |  Product Service |                    |   Order Service  |
+ +------------------+                   +------------------+                    +------------------+
+ |  - User CRUD     |                   |  - Category CRUD |                    |  - Order CRUD    |
+ |  - Auth Service  |                   |  - Product CRUD  |                    |  - OrderProducts |
+ |  - Provide user  |                   |  - Provide product|                   |  - Handle order  |
+ +--------|---------+                   +--------|---------+                    +--------|---------+
+          |                                   |                                      |
+          |                                   |                                      |
+          |                                   |                                      |
+          |                                   |                                      |
+          v                                   v                                      v
++------------------+          +---------------------------+            +---------------------------+
+|                  |          |                           |            |                           |
+|   React Frontend | <------->| User Management Interface | <--------> |       Order Interface     |
+|                  |          +---------------------------+            +---------------------------+
+|                  |          |                           |            |                           |
+|                  | <------->| Product Management Interface| <------> |  Product Selection Interface|
+|                  |          +---------------------------+            +---------------------------+
+|                  |          |                           |            |                           |
+|                  | <------->|       Order Interface     | <--------> |   Order Management Interface|
+|                  |          +---------------------------+            +---------------------------+
++------------------+                    
