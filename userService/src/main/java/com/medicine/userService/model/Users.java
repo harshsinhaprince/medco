@@ -13,7 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class Users implements UserDetails{
+public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,22 +23,23 @@ public class Users implements UserDetails{
     private String address;
     private String phone_number;
     private String role;
+    private String username;
 
     public Users() {
         super();
     }
 
-    public Users(Long id, String name, String email, String password, String address, String phone_number, String role) {
-        super();
+    public Users(Long id, String name, String username, String email, String password, String address,
+            String phone_number, String role) {
         this.id = id;
         this.name = name;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.address = address;
         this.phone_number = phone_number;
         this.role = role;
     }
-
 
     public Long getId() {
         return id;
@@ -111,7 +112,11 @@ public class Users implements UserDetails{
     @Override
     public String getUsername() {
         // TODO Auto-generated method stub
-        return this.email;
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

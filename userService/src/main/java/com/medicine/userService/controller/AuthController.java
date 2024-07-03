@@ -1,5 +1,6 @@
 package com.medicine.userService.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,15 +12,16 @@ import com.medicine.userService.service.AuthenticationService;
 
 @RestController
 public class AuthController {
+    @Autowired
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody Users request){
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody Users request) {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody Users request){
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody Users request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 }

@@ -12,40 +12,39 @@ import com.medicine.userService.repository.UserRepository;
 
 @Service
 public class AuthenticationService {
-    
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private JwtService jwtService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
-    
 
-    public AuthenticationResponse register(Users request)
-    {
+    public AuthenticationResponse register(Users request) {
         Users user = new Users();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setAddress(request.getAddress());
+        user.setPhone_number(request.getPhone_number());
         user.setRole(user.getRole());
+        user.setUsername(request.getUsername());
         user = userRepository.save(user);
         String token = jwtService.generateToken(user);
         return new AuthenticationResponse(token);
     }
 
-    public AuthenticationResponse authenticate(Users request){
+    public AuthenticationResponse authenticate(Users request) {
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()
-            )
-        );
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         Users user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.generateToken(user);
         return new AuthenticationResponse(token);
     }
-    
+
 }
