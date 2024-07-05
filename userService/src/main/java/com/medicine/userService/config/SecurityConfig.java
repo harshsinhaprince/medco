@@ -1,5 +1,7 @@
 package com.medicine.userService.config;
 
+import java.util.Enumeration;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.medicine.userService.filter.JwtAuthenticationFilter;
 import com.medicine.userService.service.UserService;
 
+import io.jsonwebtoken.io.IOException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -34,7 +45,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/register/**", "/login/**").permitAll());
-
+        System.out.println("Hye this is permitted");
         return http.build();
     }
 
@@ -42,6 +53,7 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain authenticatedSecurityFilterChain(HttpSecurity http, UserDetailsService userService,
             JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+        System.out.println(http);
         http.securityMatcher("/**")
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
@@ -61,6 +73,36 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
+    }
+
+    @WebFilter("/*")
+    public class RequestLoggingFilter extends HttpFilter {
+        @Override
+        public void init(FilterConfig filterConfig) throws ServletException {
+            // You can put filter initialization code here if needed
+        }
+
+        @Override
+        protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+                throws IOException, ServletException, java.io.IOException {
+            // Log request details
+            System.out.println("Incoming Request:");
+            System.out.println("URL: " + request.getRequestURL());
+            System.out.println("Method: " + request.getMethod());
+            System.out.println("Headers:");
+            Enumeration<String> headerNames = request.getHeaderNames();
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                System.out.println(headerName + ": " + request.getHeader(headerName));
+            }
+
+            // Continue with the filter chain
+            chain.doFilter(request, response);
+
+            // Log response details
+            System.out.println("Outgoing Response:");
+            System.out.println("Status: " + response.getStatus());
+        }
     }
 
 }

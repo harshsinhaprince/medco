@@ -1,7 +1,6 @@
 package com.medicine.userService.filter;
 
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +23,23 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    
+
     @Autowired
-    private final JwtService jwtService = new JwtService();
+    private JwtService jwtService;
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    private static final String[] PUBLIC_URLS = { "/register", "/login" };
+
+    private boolean isPublicUrl(String url) {
+        for (String publicUrl : PUBLIC_URLS) {
+            if (url.startsWith(publicUrl)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -37,57 +47,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
         String requestHeader = request.getHeader("Authorization");
-        // Bearer 2352345235sdfrsfgsdfsdf
+        String requestUri = request.getRequestURI();
+
+        if (isPublicUrl(requestUri)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         logger.info(" Header :  {}", requestHeader);
         String username = null;
         String token = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
-            // looking good
             token = requestHeader.substring(7);
             try {
-
                 username = this.jwtService.extractUsername(token);
-
             } catch (IllegalArgumentException e) {
                 logger.info("Illegal Argument while fetching the username !!");
-                e.printStackTrace();
             } catch (ExpiredJwtException e) {
                 logger.info("Given jwt token is expired !!");
-                e.printStackTrace();
             } catch (MalformedJwtException e) {
-                logger.info("Some changed has done in token !! Invalid Token");
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
-
+                logger.info("Some changes have been made to the token !! Invalid Token");
             }
-
         } else {
             logger.info("Invalid Header Value !! ");
         }
 
-        //
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
-            // fetch user detail from username
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             Boolean validateToken = this.jwtService.isValid(token, userDetails);
             if (validateToken) {
-
-                // set the authentication
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
             } else {
                 logger.info("Validation fails !!");
             }
-
         }
 
         filterChain.doFilter(request, response);
-
     }
 }
-
