@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,10 +42,14 @@ public class SecurityConfig {
     @Bean
     @Order(1)
     public SecurityFilterChain publicSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.securityMatcher("/register/**", "/login/**")
+        http.securityMatcher("/register/**", "/login/**","/oauth2/**","/error/**")
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/register/**", "/login/**").permitAll());
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/register/**", "/login/**","/oauth2/**","/error/**").permitAll())
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/loginSuccess")
+                        .failureUrl("/loginFailure"));
         System.out.println("Hye this is permitted");
         return http.build();
     }
@@ -104,5 +109,8 @@ public class SecurityConfig {
             System.out.println("Status: " + response.getStatus());
         }
     }
+
+
+
 
 }
