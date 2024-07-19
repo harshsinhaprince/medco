@@ -1,12 +1,19 @@
 package com.medicine.userService.model;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class User {
+public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,15 +23,17 @@ public class User {
     private String address;
     private String phone_number;
     private String role;
+    private String username;
 
-    public User() {
+    public Users() {
         super();
     }
 
-    public User(Long id, String name, String email, String password, String address, String phone_number, String role) {
-        super();
+    public Users(Long id, String name, String username, String email, String password, String address,
+            String phone_number, String role) {
         this.id = id;
         this.name = name;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.address = address;
@@ -92,6 +101,22 @@ public class User {
     public String toString() {
         return "User [id=" + id + ", name=" + name + ", email=" + email + ", password=" + password + ", address="
                 + address + ", phone_number=" + phone_number + ", role=" + role + "]";
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // TODO Auto-generated method stub
+        return List.of(new SimpleGrantedAuthority(role));
+    }
+
+    @Override
+    public String getUsername() {
+        // TODO Auto-generated method stub
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }
