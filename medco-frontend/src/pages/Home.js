@@ -1,11 +1,18 @@
-// src/pages/Home.js
 import React from 'react';
+import Banner from '../components/Banner';
+import Categories from '../components/Categories';
+import FeaturedProducts from '../components/FeaturedProducts';
+import Footer from '../components/Footer';
+import { Box } from '@chakra-ui/react';
 
 const Home = () => {
   return (
-    <div>
-      <h1>Home Page</h1>
-    </div>
+    <Box>
+      <Banner />
+      <Categories />
+      <FeaturedProducts />
+      <Footer />
+    </Box>
   );
 };
 
